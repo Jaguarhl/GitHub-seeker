@@ -1,4 +1,4 @@
-package com.kartsev.dmitry.githubseeker.view.ui.adapters.listeners;
+package com.kartsev.dmitry.githubseeker.view.listeners;
 
 import com.kartsev.dmitry.githubseeker.presenter.vo.RepositoryVO;
 
