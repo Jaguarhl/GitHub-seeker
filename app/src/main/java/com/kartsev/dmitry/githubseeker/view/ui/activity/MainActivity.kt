@@ -15,6 +15,7 @@ import com.kartsev.dmitry.githubseeker.R
 import com.kartsev.dmitry.githubseeker.presenter.impl.MainPresenter
 import com.kartsev.dmitry.githubseeker.presenter.interfaces.IPresenter
 import com.kartsev.dmitry.githubseeker.presenter.vo.RepositoryVO
+import com.kartsev.dmitry.githubseeker.utils.CheckConnection
 import com.kartsev.dmitry.githubseeker.utils.HideKeyboard
 import com.kartsev.dmitry.githubseeker.utils.LogUtils
 import com.kartsev.dmitry.githubseeker.utils.SimpleTextWatcher
@@ -70,6 +71,10 @@ class MainActivity : AppCompatActivity(), IView, IItemClickListener, ILoadMoreLi
 
     private fun initClickListeners() {
         btnSearch.setOnClickListener {
+            if (!CheckConnection.isInternetAvailable(applicationContext)) {
+                showError(applicationContext.getString(R.string.error_no__internet_connection))
+                return@setOnClickListener
+            }
             if (editSearchQuery.text.toString().isNotBlank() && editSearchQuery.text.toString().length > 2) {
                 LogUtils.LOGD(this.javaClass.simpleName, "Click GO! (${editSearchQuery.text})")
                 HideKeyboard.hideKeyboard(this)
