@@ -76,6 +76,8 @@ class RepoDetailsFragment: Fragment() {
         textAuthor.text = repository.authorName
         Glide.with(this).load(repository.avatarUrl)
                 .override(75, 75)
+                .placeholder(R.drawable.placeholder)
+                .error(R.drawable.placeholder)
                 .centerCrop()
                 .into(imageAuthorAva)
     }
