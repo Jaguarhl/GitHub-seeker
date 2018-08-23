@@ -19,8 +19,6 @@ import retrofit2.Response
 class MainPresenter(private val mView: IView) : IPresenter {
     private val searchModel: IModel
     private val currentScreen: Int // 0 - repo list, 1 - repo details
-//    private var subscription = Subscriptions.empty()
-
 
     init {
         this.searchModel = ModelImpl()
@@ -37,7 +35,7 @@ class MainPresenter(private val mView: IView) : IPresenter {
             override fun onResponse(call: Call<GitHubSearchAnswerDTO>, response: Response<GitHubSearchAnswerDTO>) {
                 if (response.body().totalCount > 0) {
                     LogUtils.LOGD(tag, "showing repo list ${response.body()}")
-                            mView.showList(getRepoList(response.body().items))
+                            mView.showList(getRepoList(response.body().items), response.body().totalCount)
                         } else {
                             LogUtils.LOGD(tag, "list is empty")
                             mView.showEmptyList()
@@ -48,32 +46,28 @@ class MainPresenter(private val mView: IView) : IPresenter {
 
             }
         })
-
-//        if (!subscription.isUnsubscribed)
-//            subscription.unsubscribe()
-//
-//        subscription = searchModel.getRepoList(query)
-//                .subscribe(object : Observer<GitHubSearchAnswerDTO> {
-//                    override fun onCompleted() {
-//                        LogUtils.LOGD(tag, "onCompleted()")
-//                    }
-//
-//                    override fun onNext(data: GitHubSearchAnswerDTO?) {
-//                        if (data != null && data.totalCount > 0) {
-//                            LogUtils.LOGD(tag, "showing repo list $data")
-//                            mView.showList(getRepoList(data.items))
-//                        } else {
-//                            LogUtils.LOGD(tag, "list is empty")
-//                            mView.showEmptyList()
-//                        }
-//                    }
-//
-//                    override fun onError(e: Throwable) {
-//                        LogUtils.LOGD(tag, "onError() ${e.message}")
-//                        mView.showError(e.message)
-//                    }
-//                })
     }
+
+    override fun onLoadMore(query: String?, page: Int) {
+        val call: Call<GitHubSearchAnswerDTO>? = searchModel.getRepoList(query, 0)
+
+        call?.enqueue(object : Callback<GitHubSearchAnswerDTO> {
+            override fun onResponse(call: Call<GitHubSearchAnswerDTO>, response: Response<GitHubSearchAnswerDTO>) {
+                if (response.body().totalCount > 0) {
+                    LogUtils.LOGD(tag, "showing repo list ${response.body()}")
+                    mView.showList(getRepoList(response.body().items), response.body().totalCount)
+                } else {
+                    LogUtils.LOGD(tag, "list is empty")
+                    mView.showEmptyList()
+                }
+            }
+
+            override fun onFailure(call: Call<GitHubSearchAnswerDTO>, t: Throwable) {
+
+            }
+        })
+    }
+
 
     private fun getRepoList(items: List<RepoItemDTO>): MutableList<RepositoryVO>? = runBlocking {
         val job = async(CommonPool) {
@@ -94,8 +88,7 @@ class MainPresenter(private val mView: IView) : IPresenter {
     }
 
     override fun onStop() {
-//        if (!subscription.isUnsubscribed)
-//            subscription.unsubscribe()
+        
     }
 
     companion object {

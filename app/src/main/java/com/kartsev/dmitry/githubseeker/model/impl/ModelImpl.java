@@ -5,9 +5,6 @@ import com.kartsev.dmitry.githubseeker.model.interfaces.IModel;
 import com.kartsev.dmitry.githubseeker.model.dto.GitHubSearchAnswerDTO;
 
 import retrofit2.Call;
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 public class ModelImpl implements IModel {
 
@@ -17,11 +14,4 @@ public class ModelImpl implements IModel {
     public Call<GitHubSearchAnswerDTO> getRepoList(String query, int page) {
         return apiInterface.getRepositories(query, page);
     }
-
-//    @Override
-//    public Observable<GitHubSearchAnswerDTO> getRepoList(String query) {
-//        return apiInterface.getRepositories(query)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread());
-//    }
 }

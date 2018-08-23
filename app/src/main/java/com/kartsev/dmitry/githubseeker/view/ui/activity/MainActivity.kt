@@ -65,11 +65,11 @@ class MainActivity : AppCompatActivity(), IView, IItemClickListener {
         }
     }
 
-    override fun showList(repoList: MutableList<RepositoryVO>?) {
-        LogUtils.LOGD(this.javaClass.simpleName, "$mRepoListFragment, Got repo list: $repoList")
+    override fun showList(repoList: MutableList<RepositoryVO>?, totalCount: Int) {
+        LogUtils.LOGD(this.javaClass.simpleName, "$mRepoListFragment, Got repo list($totalCount): $repoList")
         switchFragment(mRepoListFragment)
         layoutProgress.visibility = GONE
-        mRepoListFragment!!.showRepoList(repoList)
+        mRepoListFragment!!.showRepoList(repoList, totalCount)
     }
 
     override fun onStop() {
