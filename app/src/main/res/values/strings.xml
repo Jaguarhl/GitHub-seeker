@@ -1,10 +1,16 @@
 <resources>
     <string name="app_name">GitHub seeker</string>
+    <!-- Buttons -->
     <string name="btn_start_search">GO!</string>
+    <string name="btn_return_to_search_results">Return to search results</string>
+    <!-- Hints -->
     <string name="hint_search_string">Enter a search string...</string>
+    <!-- Labels -->
     <string name="label_repo_name">Repository name:</string>
     <string name="label_repo_language">Repository language:</string>
     <string name="label_author">Author:</string>
+    <!-- Messages -->
     <string name="message_nothing_found">Nothing found. Please change your query and try again.</string>
-    <string name="btn_return_to_search_results">Return to search results</string>
+    <!-- Errors -->
+    <string name="error_search_string">Search string must be greater then 3 symbols.</string>
 </resources>

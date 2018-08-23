@@ -60,7 +60,8 @@ class MainActivity : AppCompatActivity(), IView, IItemClickListener {
                 layoutProgress.visibility = VISIBLE
                 textNothingFound.visibility = GONE
                 mPresenter.onSearchClick(editSearchQuery.text.toString())
-            }
+            } else
+                showError(applicationContext.getString(R.string.error_search_string))
         }
     }
 
@@ -117,9 +118,6 @@ class MainActivity : AppCompatActivity(), IView, IItemClickListener {
      */
     private fun switchFragment(fragmentTo: Fragment?) {
         LogUtils.LOGD(this::class.java.simpleName, "switchFragment(): $fragmentTo")
-
-        if (mCurrentFragment == fragmentTo)
-            return
 
         if (fragmentTo != null) {
             val fragmentTransaction = mFragmentManager.beginTransaction()
