@@ -8,6 +8,6 @@ import retrofit2.Call;
 import rx.Observable;
 
 public interface IModel {
-    Call<GitHubSearchAnswerDTO> getRepoList(String query);
+    Call<GitHubSearchAnswerDTO> getRepoList(String query, int page);
 //    Observable<GitHubSearchAnswerDTO> getRepoList(String query);
 }

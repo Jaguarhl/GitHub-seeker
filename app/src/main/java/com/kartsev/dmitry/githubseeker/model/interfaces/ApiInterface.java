@@ -11,6 +11,6 @@ import rx.Observable;
 
 public interface ApiInterface {
     @GET("search/repositories")
-    Call<GitHubSearchAnswerDTO> getRepositories(@Query("q") String query);
+    Call<GitHubSearchAnswerDTO> getRepositories(@Query("q") String query, @Query("page") int page);
 //    Observable<GitHubSearchAnswerDTO> getRepositories(@Query("q") String query);
 }

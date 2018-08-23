@@ -31,7 +31,7 @@ class MainPresenter(private val mView: IView) : IPresenter {
     override fun onSearchClick(query: String) {
         LogUtils.LOGD(this.javaClass.simpleName, "onSearchClick($query)")
 
-        val call: Call<GitHubSearchAnswerDTO>? = searchModel.getRepoList(query)
+        val call: Call<GitHubSearchAnswerDTO>? = searchModel.getRepoList(query, 0)
 
         call?.enqueue(object : Callback<GitHubSearchAnswerDTO> {
             override fun onResponse(call: Call<GitHubSearchAnswerDTO>, response: Response<GitHubSearchAnswerDTO>) {

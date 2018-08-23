@@ -14,8 +14,8 @@ public class ModelImpl implements IModel {
     ApiInterface apiInterface = ApiModule.getApiInterface();
 
     @Override
-    public Call<GitHubSearchAnswerDTO> getRepoList(String query) {
-        return apiInterface.getRepositories(query);
+    public Call<GitHubSearchAnswerDTO> getRepoList(String query, int page) {
+        return apiInterface.getRepositories(query, page);
     }
 
 //    @Override
