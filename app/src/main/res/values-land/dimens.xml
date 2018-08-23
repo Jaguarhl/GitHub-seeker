@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- text size -->
+    <dimen name="normal_text">16sp</dimen>
+    <dimen name="accent_text">18sp</dimen>
+</resources>

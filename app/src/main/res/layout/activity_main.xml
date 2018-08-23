@@ -11,29 +11,39 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:focusable="true"
-        android:focusableInTouchMode="true"></LinearLayout>
+        android:focusableInTouchMode="true"/>
 
     <EditText
         android:id="@+id/editSearchQuery"
         android:layout_width="0dp"
-        android:layout_height="40dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginStart="10dp"
+        android:layout_height="@dimen/btn_search_height"
+        android:layout_marginEnd="@dimen/all_padding_10"
+        android:layout_marginStart="@dimen/all_padding_10"
         android:hint="@string/hint_search_string"
         android:inputType="text"
         app:layout_constraintEnd_toStartOf="@+id/btnSearch"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageButton
+        android:id="@+id/btnClearSearchQuery"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:background="@color/colorWhite"
+        android:padding="3dp"
+        android:src="@drawable/clear"
+        android:visibility="invisible"
+        app:layout_constraintRight_toRightOf="@+id/editSearchQuery"
+        app:layout_constraintTop_toTopOf="@+id/editSearchQuery" />
+
     <Button
         android:id="@+id/btnSearch"
-        android:layout_width="50dp"
-        android:layout_height="40dp"
-        android:layout_marginEnd="10dp"
+        android:layout_width="@dimen/btn_search_width"
+        android:layout_height="@dimen/btn_search_height"
+        android:layout_marginEnd="@dimen/all_padding_10"
         android:text="@string/btn_start_search"
         android:textSize="@dimen/normal_text"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/editSearchQuery"
         app:layout_constraintTop_toTopOf="parent" />
 
     <FrameLayout

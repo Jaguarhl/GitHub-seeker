@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="normal_text">14sp</dimen>
+    <!-- text size -->
+    <dimen name="normal_text">15sp</dimen>
+    <dimen name="accent_text">17sp</dimen>
+    <!-- margins and padding -->
     <dimen name="all_padding_10">10dp</dimen>
     <dimen name="all_padding_5">5dp</dimen>
-    <dimen name="accent_text">16sp</dimen>
+    <dimen name="all_padding_30">30dp</dimen>
+    <!-- UI elements sizes -->
     <dimen name="progress_size">110dp</dimen>
     <dimen name="image_avatar_size">75dp</dimen>
     <dimen name="btn_return_height">45dp</dimen>
-    <dimen name="all_padding_30">30dp</dimen>
+    <dimen name="btn_search_height">45dp</dimen>
+    <dimen name="btn_search_width">55dp</dimen>
 </resources>
