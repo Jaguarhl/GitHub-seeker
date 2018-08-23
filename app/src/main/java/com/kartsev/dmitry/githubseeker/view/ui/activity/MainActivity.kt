@@ -85,7 +85,10 @@ class MainActivity : AppCompatActivity(), IView, IItemClickListener, ILoadMoreLi
                 showError(applicationContext.getString(R.string.error_search_string))
         }
 
-        btnClearSearchQuery.setOnClickListener { editSearchQuery.setText("") }
+        btnClearSearchQuery.setOnClickListener {
+            editSearchQuery.setText("")
+            showEmptyList()
+        }
     }
 
     override fun showList(repoList: MutableList<RepositoryVO>?, totalCount: Int) {
@@ -179,7 +182,7 @@ class MainActivity : AppCompatActivity(), IView, IItemClickListener, ILoadMoreLi
         }
     }
 
-    override fun LoadMore(page: Int) {
+    override fun onLoadMore(page: Int) {
         mPresenter.onLoadMore(editSearchQuery.text.toString(), page)
     }
 
