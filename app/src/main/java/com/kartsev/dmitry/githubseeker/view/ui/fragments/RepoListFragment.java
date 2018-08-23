@@ -94,7 +94,7 @@ public class RepoListFragment extends Fragment implements IItemClickListener {
                 isLoading = true;
                 currentPage += 1; //Increment page index to load the next one
                 TOTAL_PAGES = getTotalPageCount();
-                eventListener.LoadMore(currentPage);
+                eventListener.onLoadMore(currentPage);
                  LogUtils.LOGD(TAG, "loadMoreItems: for page " + currentPage + " from " + TOTAL_PAGES
                         + " total items " + TOTAL_ITEM_COUNT + " from item (" + (currentPage * LIST_OFFSET) + ")"
                         + " to (" + ((currentPage * LIST_OFFSET) + LIST_OFFSET) + ")");

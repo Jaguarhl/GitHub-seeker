@@ -6,14 +6,19 @@ import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentTransaction.*
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import com.kartsev.dmitry.githubseeker.R
 import com.kartsev.dmitry.githubseeker.presenter.impl.MainPresenter
 import com.kartsev.dmitry.githubseeker.presenter.interfaces.IPresenter
 import com.kartsev.dmitry.githubseeker.presenter.vo.RepositoryVO
+import com.kartsev.dmitry.githubseeker.utils.CheckConnection
 import com.kartsev.dmitry.githubseeker.utils.HideKeyboard
 import com.kartsev.dmitry.githubseeker.utils.LogUtils
+import com.kartsev.dmitry.githubseeker.utils.SimpleTextWatcher
 import com.kartsev.dmitry.githubseeker.view.interfaces.IView
 import com.kartsev.dmitry.githubseeker.view.listeners.IItemClickListener
 import com.kartsev.dmitry.githubseeker.view.listeners.ILoadMoreListener
@@ -51,10 +56,25 @@ class MainActivity : AppCompatActivity(), IView, IItemClickListener, ILoadMoreLi
         LogUtils.setAsAllowedTag(this.javaClass.simpleName)
 
         initClickListeners()
+        initTypeListeners()
+    }
+
+    private fun initTypeListeners() {
+        editSearchQuery.addTextChangedListener(SimpleTextWatcher {
+            if (it.toString().isNotEmpty()) {
+                btnClearSearchQuery.visibility = View.VISIBLE
+            } else {
+                btnClearSearchQuery.visibility = View.INVISIBLE
+            }
+        })
     }
 
     private fun initClickListeners() {
         btnSearch.setOnClickListener {
+            if (!CheckConnection.isInternetAvailable(applicationContext)) {
+                showError(applicationContext.getString(R.string.error_no__internet_connection))
+                return@setOnClickListener
+            }
             if (editSearchQuery.text.toString().isNotBlank() && editSearchQuery.text.toString().length > 2) {
                 LogUtils.LOGD(this.javaClass.simpleName, "Click GO! (${editSearchQuery.text})")
                 HideKeyboard.hideKeyboard(this)
@@ -64,6 +84,11 @@ class MainActivity : AppCompatActivity(), IView, IItemClickListener, ILoadMoreLi
             } else
                 showError(applicationContext.getString(R.string.error_search_string))
         }
+
+        btnClearSearchQuery.setOnClickListener {
+            editSearchQuery.setText("")
+            showEmptyList()
+        }
     }
 
     override fun showList(repoList: MutableList<RepositoryVO>?, totalCount: Int) {
@@ -72,6 +97,7 @@ class MainActivity : AppCompatActivity(), IView, IItemClickListener, ILoadMoreLi
         layoutProgress.visibility = GONE
         mRepoListFragment!!.showRepoList(repoList, totalCount)
     }
+
     override fun addToList(repoList: MutableList<RepositoryVO>?) {
         LogUtils.LOGD(this.javaClass.simpleName, "$mRepoListFragment, Add to list(): $repoList")
         mRepoListFragment!!.addToList(repoList)
@@ -156,7 +182,7 @@ class MainActivity : AppCompatActivity(), IView, IItemClickListener, ILoadMoreLi
         }
     }
 
-    override fun LoadMore(page: Int) {
+    override fun onLoadMore(page: Int) {
         mPresenter.onLoadMore(editSearchQuery.text.toString(), page)
     }
 
