@@ -13,4 +13,5 @@
     <string name="message_nothing_found">Nothing found. Please change your query and try again.</string>
     <!-- Errors -->
     <string name="error_search_string">Search string must be greater then 3 symbols.</string>
+    <string name="error_not_correct_server_answer">Server returned not correct answer. Try again.</string>
 </resources>

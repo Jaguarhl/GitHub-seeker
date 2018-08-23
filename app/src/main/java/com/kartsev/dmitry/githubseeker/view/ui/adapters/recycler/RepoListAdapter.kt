@@ -10,7 +10,7 @@ import android.widget.TextView
 import com.kartsev.dmitry.githubseeker.R
 import com.kartsev.dmitry.githubseeker.presenter.vo.RepositoryVO
 import com.kartsev.dmitry.githubseeker.utils.LogUtils
-import com.kartsev.dmitry.githubseeker.view.ui.adapters.listeners.IItemClickListener
+import com.kartsev.dmitry.githubseeker.view.listeners.IItemClickListener
 
 class RepoListAdapter(private var repoList: List<RepositoryVO>?, private val clickListener: IItemClickListener):
         BaseAdapterPagination<RepositoryVO>(repoList as MutableList<RepositoryVO>) {
@@ -39,8 +39,11 @@ class RepoListAdapter(private var repoList: List<RepositoryVO>?, private val cli
 
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val repo = repoList!![position]
+        val repo = list[position]
         LogUtils.LOGD(this::class.java.simpleName, "onBindViewHolder(): $repo")
+
+        if (repo == null)
+            return
 
         when (getItemViewType(position)) {
             ITEM -> {
@@ -59,15 +62,9 @@ class RepoListAdapter(private var repoList: List<RepositoryVO>?, private val cli
         }
     }
 
-    override fun getItemCount(): Int {
-        return repoList!!.size
-    }
-
     fun setRepoList(repoList: List<RepositoryVO>?) {
         if (repoList != null) {
-            LogUtils.LOGD(this::class.java.simpleName, "Setting repoList ($repoList)")
-            this.repoList = repoList
-            this.notifyDataSetChanged()
+            setList(repoList)
         }
     }
 

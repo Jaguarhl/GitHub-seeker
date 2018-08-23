@@ -16,7 +16,8 @@ import android.view.ViewGroup;
 import com.kartsev.dmitry.githubseeker.R;
 import com.kartsev.dmitry.githubseeker.presenter.vo.RepositoryVO;
 import com.kartsev.dmitry.githubseeker.utils.LogUtils;
-import com.kartsev.dmitry.githubseeker.view.ui.adapters.listeners.IItemClickListener;
+import com.kartsev.dmitry.githubseeker.view.listeners.IItemClickListener;
+import com.kartsev.dmitry.githubseeker.view.listeners.ILoadMoreListener;
 import com.kartsev.dmitry.githubseeker.view.ui.adapters.recycler.RepoListAdapter;
 import com.kartsev.dmitry.githubseeker.view.ui.adapters.recycler.pagination.PaginationScrollListener;
 
@@ -29,14 +30,15 @@ public class RepoListFragment extends Fragment implements IItemClickListener {
     private RepoListAdapter mAdapter;
     private List<RepositoryVO> mRepoList = Collections.emptyList();
     private RecyclerView recyclerRepoList;
-    private IItemClickListener listener;
+    private IItemClickListener clickListener;
+    private ILoadMoreListener eventListener;
     private String LIST_REPOS = "RepoList";
 
     /*
         Pagination vals
      */
     private int LIST_OFFSET = 30;
-    private static final int PAGE_START = 0;
+    private static final int PAGE_START = 1;
     // Indicates if footer ProgressBar is shown (i.e. next page is loading)
     private boolean isLoading;
     // If current page is the last page (Pagination will stop after this page load)
@@ -75,7 +77,9 @@ public class RepoListFragment extends Fragment implements IItemClickListener {
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof IItemClickListener)
-            listener = (IItemClickListener) context;
+            clickListener = (IItemClickListener) context;
+        if (context instanceof ILoadMoreListener)
+            eventListener = (ILoadMoreListener) context;
     }
 
     private void initRecyclerView() {
@@ -90,9 +94,7 @@ public class RepoListFragment extends Fragment implements IItemClickListener {
                 isLoading = true;
                 currentPage += 1; //Increment page index to load the next one
                 TOTAL_PAGES = getTotalPageCount();
-//                presenter.askForBetsHistory(currentPage * LIST_OFFSET, LIST_OFFSET,
-//                        betFilter.getBetType(), betFilter.getEventType(),
-//                        betFilter.getStartDate(), betFilter.getEndDate());
+                eventListener.LoadMore(currentPage);
                  LogUtils.LOGD(TAG, "loadMoreItems: for page " + currentPage + " from " + TOTAL_PAGES
                         + " total items " + TOTAL_ITEM_COUNT + " from item (" + (currentPage * LIST_OFFSET) + ")"
                         + " to (" + ((currentPage * LIST_OFFSET) + LIST_OFFSET) + ")");
@@ -118,7 +120,7 @@ public class RepoListFragment extends Fragment implements IItemClickListener {
     @Override
     public void onItemControlClicked(int position, RepositoryVO repository, int control) {
         if (repository != null) {
-            listener.onItemControlClicked(position, repository, control);
+            clickListener.onItemControlClicked(position, repository, control);
         }
     }
 
@@ -129,6 +131,21 @@ public class RepoListFragment extends Fragment implements IItemClickListener {
             this.TOTAL_ITEM_COUNT = totalCount;
             recyclerRepoList.scrollToPosition(0);
             mAdapter.setRepoList(repoList);
+        }
+    }
+
+    public void addToList(List<RepositoryVO> repoList) {
+        LogUtils.LOGD(TAG, "addToList(): " + repoList);
+        if (repoList != null) {
+            mAdapter.removeLoadingFooter();
+            isLoading = false;
+            mRepoList.addAll(repoList);
+            mAdapter.addAll(repoList);
+
+            if (currentPage != TOTAL_PAGES)
+                mAdapter.addLoadingFooter();
+            else
+                isLastPage = true;
         }
     }
 
@@ -153,12 +170,18 @@ public class RepoListFragment extends Fragment implements IItemClickListener {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (mRepoList != null && mRepoList.isEmpty()) {
+        if (mRepoList != null && !mRepoList.isEmpty()) {
             outState.putParcelableArrayList(LIST_REPOS, (ArrayList<? extends Parcelable>) mRepoList);
         }
     }
 
     public void clearList() {
         mAdapter.setRepoList(Collections.EMPTY_LIST);
+    }
+
+    public void cancelLoadMore() {
+        currentPage--;
+        mAdapter.removeLoadingFooter();
+        isLoading = false;
     }
 }

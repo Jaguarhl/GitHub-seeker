@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.kartsev.dmitry.githubseeker.R
 import com.kartsev.dmitry.githubseeker.presenter.vo.RepositoryVO
-import com.kartsev.dmitry.githubseeker.view.ui.adapters.listeners.IItemClickListener
+import com.kartsev.dmitry.githubseeker.view.listeners.IItemClickListener
 import kotlinx.android.synthetic.main.fragment_repo_details.*
 
 class RepoDetailsFragment: Fragment() {

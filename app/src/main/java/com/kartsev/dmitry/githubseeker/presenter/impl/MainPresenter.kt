@@ -29,11 +29,11 @@ class MainPresenter(private val mView: IView) : IPresenter {
     override fun onSearchClick(query: String) {
         LogUtils.LOGD(this.javaClass.simpleName, "onSearchClick($query)")
 
-        val call: Call<GitHubSearchAnswerDTO>? = searchModel.getRepoList(query, 0)
+        val call: Call<GitHubSearchAnswerDTO>? = searchModel.getRepoList(query, 1)
 
         call?.enqueue(object : Callback<GitHubSearchAnswerDTO> {
             override fun onResponse(call: Call<GitHubSearchAnswerDTO>, response: Response<GitHubSearchAnswerDTO>) {
-                if (response.body().totalCount > 0) {
+                if (response.body() != null && response.body().totalCount > 0) {
                     LogUtils.LOGD(tag, "showing repo list ${response.body()}")
                             mView.showList(getRepoList(response.body().items), response.body().totalCount)
                         } else {
@@ -49,16 +49,15 @@ class MainPresenter(private val mView: IView) : IPresenter {
     }
 
     override fun onLoadMore(query: String?, page: Int) {
-        val call: Call<GitHubSearchAnswerDTO>? = searchModel.getRepoList(query, 0)
+        val call: Call<GitHubSearchAnswerDTO>? = searchModel.getRepoList(query, page)
 
         call?.enqueue(object : Callback<GitHubSearchAnswerDTO> {
             override fun onResponse(call: Call<GitHubSearchAnswerDTO>, response: Response<GitHubSearchAnswerDTO>) {
-                if (response.body().totalCount > 0) {
+                if (response.body() != null && response.body().totalCount > 0) {
                     LogUtils.LOGD(tag, "showing repo list ${response.body()}")
-                    mView.showList(getRepoList(response.body().items), response.body().totalCount)
+                    mView.addToList(getRepoList(response.body().items))
                 } else {
-                    LogUtils.LOGD(tag, "list is empty")
-                    mView.showEmptyList()
+                    mView.notCorrectServerAnswer()
                 }
             }
 

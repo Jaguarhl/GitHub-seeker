@@ -15,12 +15,13 @@ import com.kartsev.dmitry.githubseeker.presenter.vo.RepositoryVO
 import com.kartsev.dmitry.githubseeker.utils.HideKeyboard
 import com.kartsev.dmitry.githubseeker.utils.LogUtils
 import com.kartsev.dmitry.githubseeker.view.interfaces.IView
-import com.kartsev.dmitry.githubseeker.view.ui.adapters.listeners.IItemClickListener
+import com.kartsev.dmitry.githubseeker.view.listeners.IItemClickListener
+import com.kartsev.dmitry.githubseeker.view.listeners.ILoadMoreListener
 import com.kartsev.dmitry.githubseeker.view.ui.fragments.RepoDetailsFragment
 import com.kartsev.dmitry.githubseeker.view.ui.fragments.RepoListFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity(), IView, IItemClickListener {
+class MainActivity : AppCompatActivity(), IView, IItemClickListener, ILoadMoreListener {
     private lateinit var mPresenter: IPresenter
     private lateinit var mFragmentManager: FragmentManager
 
@@ -71,6 +72,16 @@ class MainActivity : AppCompatActivity(), IView, IItemClickListener {
         layoutProgress.visibility = GONE
         mRepoListFragment!!.showRepoList(repoList, totalCount)
     }
+    override fun addToList(repoList: MutableList<RepositoryVO>?) {
+        LogUtils.LOGD(this.javaClass.simpleName, "$mRepoListFragment, Add to list(): $repoList")
+        mRepoListFragment!!.addToList(repoList)
+    }
+
+    override fun notCorrectServerAnswer() {
+        mRepoListFragment!!.cancelLoadMore()
+        showError(applicationContext.getString(R.string.error_not_correct_server_answer))
+    }
+
 
     override fun onStop() {
         super.onStop()
@@ -144,6 +155,11 @@ class MainActivity : AppCompatActivity(), IView, IItemClickListener {
             }
         }
     }
+
+    override fun LoadMore(page: Int) {
+        mPresenter.onLoadMore(editSearchQuery.text.toString(), page)
+    }
+
 
     override fun showRepoDetails(repo: RepositoryVO?) {
         mRepoDetailsFragment?.setRepoToShow(repo!!)
