@@ -131,6 +131,7 @@ public class RepoListFragment extends Fragment implements IItemClickListener {
             this.TOTAL_ITEM_COUNT = totalCount;
             recyclerRepoList.scrollToPosition(0);
             mAdapter.setRepoList(repoList);
+            isLastPage = repoList.size() < LIST_OFFSET;
         }
     }
 
