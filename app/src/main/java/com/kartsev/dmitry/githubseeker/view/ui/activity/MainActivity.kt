@@ -143,7 +143,7 @@ class MainActivity : AppCompatActivity(), IView, IItemClickListener, ILoadMoreLi
             fragmentTransaction.add(R.id.container, mRepoListFragment, REPO_LIST)
         if (fragmentManager.findFragmentByTag(REPO_DETAILS) == null)
             fragmentTransaction.add(R.id.container, mRepoDetailsFragment, REPO_DETAILS)
-        fragmentTransaction.addToBackStack(BACK_STACK_OPERATION)
+        fragmentTransaction.addToBackStack(null)
         fragmentTransaction.hide(mRepoDetailsFragment)
         fragmentTransaction.commit()
         mCurrentFragment = mRepoListFragment
@@ -193,7 +193,7 @@ class MainActivity : AppCompatActivity(), IView, IItemClickListener, ILoadMoreLi
     }
 
     override fun closeDetailsScreen() {
-        switchFragment(mRepoListFragment)
+        onBackPressed()
     }
 
 }

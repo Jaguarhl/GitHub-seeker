@@ -33,10 +33,9 @@ public class RepoListFragment extends Fragment implements IItemClickListener {
     private IItemClickListener clickListener;
     private ILoadMoreListener eventListener;
     private String LIST_REPOS = "RepoList";
-
     /*
         Pagination vals
-     */
+    */
     private int LIST_OFFSET = 30;
     private static final int PAGE_START = 1;
     // Indicates if footer ProgressBar is shown (i.e. next page is loading)
@@ -82,6 +81,7 @@ public class RepoListFragment extends Fragment implements IItemClickListener {
             eventListener = (ILoadMoreListener) context;
     }
 
+
     private void initRecyclerView() {
         LinearLayoutManager llm = new LinearLayoutManager(getContext());
         recyclerRepoList.setLayoutManager(llm);
@@ -91,13 +91,13 @@ public class RepoListFragment extends Fragment implements IItemClickListener {
         recyclerRepoList.addOnScrollListener(new PaginationScrollListener(llm) {
             @Override
             protected void loadMoreItems() {
+                LogUtils.LOGD(TAG, "loadMoreItems: for page " + (currentPage + 1) + " from " + TOTAL_PAGES
+                        + " total items " + TOTAL_ITEM_COUNT + " from item (" + (currentPage * LIST_OFFSET) + ")"
+                        + " to (" + ((currentPage * LIST_OFFSET) + LIST_OFFSET) + ")");
                 isLoading = true;
                 currentPage += 1; //Increment page index to load the next one
                 TOTAL_PAGES = getTotalPageCount();
                 eventListener.onLoadMore(currentPage);
-                 LogUtils.LOGD(TAG, "loadMoreItems: for page " + currentPage + " from " + TOTAL_PAGES
-                        + " total items " + TOTAL_ITEM_COUNT + " from item (" + (currentPage * LIST_OFFSET) + ")"
-                        + " to (" + ((currentPage * LIST_OFFSET) + LIST_OFFSET) + ")");
             }
 
             @Override
@@ -125,29 +125,33 @@ public class RepoListFragment extends Fragment implements IItemClickListener {
     }
 
     public void showRepoList(List<RepositoryVO> repoList, int totalCount) {
-        if (repoList != null) {
-            LogUtils.LOGD(TAG, "showRepoList(" + totalCount + "): " + repoList);
-            this.mRepoList = repoList;
-            this.TOTAL_ITEM_COUNT = totalCount;
-            recyclerRepoList.scrollToPosition(0);
-            mAdapter.setRepoList(repoList);
-            isLastPage = repoList.size() < LIST_OFFSET;
+        if (repoList == null) {
+            LogUtils.LOGD(TAG, "showRepoList() list is null");
+            return;
         }
+        LogUtils.LOGD(TAG, "showRepoList(" + totalCount + "): " + repoList);
+        this.mRepoList = repoList;
+        this.TOTAL_ITEM_COUNT = totalCount;
+        currentPage = 1;
+        recyclerRepoList.scrollToPosition(0);
+        mAdapter.setRepoList(repoList);
+        isLastPage = repoList.size() < LIST_OFFSET;
     }
 
     public void addToList(List<RepositoryVO> repoList) {
         LogUtils.LOGD(TAG, "addToList(): " + repoList);
-        if (repoList != null) {
-            mAdapter.removeLoadingFooter();
-            isLoading = false;
-            mRepoList.addAll(repoList);
-            mAdapter.addAll(repoList);
+        if (repoList == null)
+            return;
 
-            if (currentPage != TOTAL_PAGES)
-                mAdapter.addLoadingFooter();
-            else
-                isLastPage = true;
-        }
+        mAdapter.removeLoadingFooter();
+        isLoading = false;
+        mRepoList.addAll(repoList);
+        mAdapter.addAll(repoList);
+
+        if (currentPage != TOTAL_PAGES)
+            mAdapter.addLoadingFooter();
+        else
+            isLastPage = true;
     }
 
     @Override
