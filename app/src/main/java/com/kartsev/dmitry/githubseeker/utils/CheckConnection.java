@@ -3,7 +3,6 @@ package com.kartsev.dmitry.githubseeker.utils;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Debug;
 
 import java.io.IOException;
 

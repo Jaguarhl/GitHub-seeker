@@ -16,6 +16,7 @@ class RepoListAdapter(private var repoList: List<RepositoryVO>?, private val cli
         BaseAdapterPagination<RepositoryVO>(repoList as MutableList<RepositoryVO>) {
     init {
         LogUtils.setAsAllowedTag(this::class.java.simpleName)
+        setLoadingFooter(RepositoryVO())
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

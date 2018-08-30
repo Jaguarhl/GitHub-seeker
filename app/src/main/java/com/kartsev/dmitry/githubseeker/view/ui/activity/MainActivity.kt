@@ -27,7 +27,7 @@ import com.kartsev.dmitry.githubseeker.view.ui.fragments.RepoListFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), IView, IItemClickListener, ILoadMoreListener {
-    private lateinit var mPresenter: IPresenter
+    private var mPresenter: IPresenter? = null
     private lateinit var mFragmentManager: FragmentManager
 
     // fragments
@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity(), IView, IItemClickListener, ILoadMoreLi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        mPresenter = MainPresenter(this)
+        attachPresenter()
         mFragmentManager = supportFragmentManager
         if (savedInstanceState != null) {
             mRepoListFragment = supportFragmentManager.findFragmentByTag(REPO_LIST) as RepoListFragment
@@ -57,6 +57,23 @@ class MainActivity : AppCompatActivity(), IView, IItemClickListener, ILoadMoreLi
 
         initClickListeners()
         initTypeListeners()
+    }
+
+    private fun attachPresenter() {
+        mPresenter = lastCustomNonConfigurationInstance as? IPresenter
+        if (mPresenter == null) {
+            mPresenter = MainPresenter()
+        }
+        mPresenter!!.attachView(this)
+    }
+
+    override fun onDestroy() {
+        mPresenter!!.detachView()
+        super.onDestroy()
+    }
+
+    override fun onRetainCustomNonConfigurationInstance(): Any? {
+        return mPresenter
     }
 
     private fun initTypeListeners() {
@@ -80,7 +97,7 @@ class MainActivity : AppCompatActivity(), IView, IItemClickListener, ILoadMoreLi
                 HideKeyboard.hideKeyboard(this)
                 layoutProgress.visibility = VISIBLE
                 textNothingFound.visibility = GONE
-                mPresenter.onSearchClick(editSearchQuery.text.toString())
+                mPresenter?.onSearchClick(editSearchQuery.text.toString())
             } else
                 showError(applicationContext.getString(R.string.error_search_string))
         }
@@ -111,7 +128,7 @@ class MainActivity : AppCompatActivity(), IView, IItemClickListener, ILoadMoreLi
 
     override fun onStop() {
         super.onStop()
-        mPresenter.onStop()
+        mPresenter?.onStop()
     }
 
     override fun showError(error: String?) {
@@ -174,21 +191,22 @@ class MainActivity : AppCompatActivity(), IView, IItemClickListener, ILoadMoreLi
     override fun onItemControlClicked(position: Int, repository: RepositoryVO?, conrol: Int) {
         if (repository != null) {
             LogUtils.LOGD(this::class.java.simpleName, "Clicked $repository")
-            mPresenter.onRepoChosen(repository)
+            mPresenter?.onRepoChosen(repository)
         } else {
             when (conrol) {
-                1 -> mPresenter.onCloseDetailsScreen()
+                1 -> mPresenter?.onCloseDetailsScreen()
             }
         }
     }
 
     override fun onLoadMore(page: Int) {
-        mPresenter.onLoadMore(editSearchQuery.text.toString(), page)
+        mPresenter?.onLoadMore(editSearchQuery.text.toString(), page)
     }
 
 
     override fun showRepoDetails(repo: RepositoryVO?) {
-        mRepoDetailsFragment?.setRepoToShow(repo!!)
+        LogUtils.LOGD(this::class.java.simpleName, "showRepoDetails($repo)")
+        mRepoDetailsFragment?.setRepoToShow(repo ?: return)
         switchFragment(mRepoDetailsFragment)
     }
 

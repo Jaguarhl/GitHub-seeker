@@ -27,6 +27,8 @@ class RepositoryVO : Parcelable {
         avatarUrl = `in`.readString()
     }
 
+    constructor()
+
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeString(repoName)
         dest.writeString(repoLanguage)
